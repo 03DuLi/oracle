@@ -164,16 +164,16 @@ PARTITION BY REFERENCE (ORDER_DETAILS_FK1)
 ```sql
 grant select on du_li.orders to DuLi;
 ```
-![](https://github.com/03DuLi/oracle/blob/master/test3/55.png)
+![](https://github.com/03DuLi/oracle/blob/master/55.png)
 ```sql
 grant select on du_li.order_details to DuLi;
 ```
-![](https://github.com/03DuLi/oracle/blob/master/test3/55.png)
+![](https://github.com/03DuLi/oracle/blob/master/55.png)
 ### 分配表空间权限：
 ```sql
 grant unlimited tablespace to du_li;
 ```
-![](https://github.com/03DuLi/oracle/blob/master/test3/55.png)
+![](https://github.com/03DuLi/oracle/blob/master/55.png)
 ### 查看数据库的使用情况：
 ```sql
 $ sqlplus system/123@pdborcl
