@@ -156,6 +156,7 @@ PARTITION BY REFERENCE (ORDER_DETAILS_FK1)
 ```
 ### 表创建成功
 ![](https://github.com/03DuLi/oracle/blob/master/test3/11.png)
-![](https://github.com/03DuLi/oracle/blob/master/test3/11.png)
-![](https://github.com/03DuLi/oracle/blob/master/test3/11.png)
-![](https://github.com/03DuLi/oracle/blob/master/test3/11.png)
+![](https://github.com/03DuLi/oracle/blob/master/test3/22.png)
+### 查看数据库的使用情况：
+![](https://github.com/03DuLi/oracle/blob/master/test3/33.png)
+![](https://github.com/03DuLi/oracle/blob/master/test3/44.png)
