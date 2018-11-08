@@ -155,4 +155,7 @@ PARTITION BY REFERENCE (ORDER_DETAILS_FK1)
 );
 ```
 ### 表创建成功
-![](./img/sqldevelop修改用户.png)
+![](https://github.com/03DuLi/oracle/blob/master/test3/11.png)
+![](https://github.com/03DuLi/oracle/blob/master/test3/11.png)
+![](https://github.com/03DuLi/oracle/blob/master/test3/11.png)
+![](https://github.com/03DuLi/oracle/blob/master/test3/11.png)
