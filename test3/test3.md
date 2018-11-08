@@ -12,24 +12,7 @@
 ## 实验步骤
 在主表orders和从表order_details之间建立引用分区
 在study用户中创建两个表：orders（订单表）和order_details（订单详表），两个表通过列order_id建立主外键关联。orders表按范围分区进行存储，order_details使用引用分区进行存储。
-### 创建user02,user03的表空间:
-```sql
-SQL > create tablespace users02 datafile' / home / oracle / app / oracle / oradata / orcl / pdborcl / pdbtest_users02_1。DBF 'SIZE 100M AUTOEXTEND ON NEXT 50M MAXSIZE UNLIMITED，
-' / home / oracle / app / oracle / oradata / orcl / pdborcl / pdbtest_users02_2。DBF 'SIZE 100M AUTOEXTEND ON NEXT 50M MAXSIZE UNLIMITED，
-EXTENT MANAGEMENT本地区域空间管理自动;
-表空间已创建
-SQL > create tablespace users03 datafile' / home / oracle / app / oracle / oradata / orcl / pdborcl / pdbtest_users03_1。DBF 'SIZE 100M AUTOEXTEND ON NEXT 50M MAXSIZE UNLIMITED，
-' / home / oracle / app / oracle / oradata / orcl / pdborcl / pdbtest_users03_2。DBF 'SIZE 100M AUTOEXTEND ON NEXT 50M MAXSIZE UNLIMITED，
-EXTENT MANAGEMENT本地区域空间管理自动;
-表空间已创建
-```
-### 给自己的账号分配分区的使用权限:
-```sql
-SQL> ALTER USER du_li QUOTA 50M ON users02;
-User altered.
-SQL> ALTER USER du_li QUOTA 50M ON users03;
-User altered
-```
+
 ### 创建orders表的语句是：
 ```sql
 CREATE TABLE ORDERS 
@@ -176,6 +159,21 @@ PARTITION BY REFERENCE (ORDER_DETAILS_FK1)
 ### 表创建成功
 ![](https://github.com/03DuLi/oracle/blob/master/test3/11.png)
 ![](https://github.com/03DuLi/oracle/blob/master/test3/22.png)
+
+### 分配查询权限：
+```sql
+grant select on du_li.orders to DuLi;
+```
+![](https://github.com/03DuLi/oracle/blob/master/test3/55.png)
+```sql
+grant select on du_li.order_details to DuLi;
+```
+![](https://github.com/03DuLi/oracle/blob/master/test3/55.png)
+### 分配表空间权限：
+```sql
+grant unlimited tablespace to du_li;
+```
+![](https://github.com/03DuLi/oracle/blob/master/test3/55.png)
 ### 查看数据库的使用情况：
 ```sql
 $ sqlplus system/123@pdborcl
