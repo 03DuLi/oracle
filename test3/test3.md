@@ -152,17 +152,110 @@ NOCOMPRESS NO INMEMORY
 ```sql
 grant select on du_li.orders to DuLi;
 ```
-![](https://github.com/03DuLi/oracle/blob/master/55.png)
+![](https://github.com/03DuLi/oracle/blob/master/test3/55.png)
 ```sql
 grant select on du_li.order_details to DuLi;
 ```
-![](https://github.com/03DuLi/oracle/blob/master/55.png)
+![](https://github.com/03DuLi/oracle/blob/master/test3/55.png)
 ### 分配表空间权限：
 ```sql
 grant unlimited tablespace to du_li;
 ```
-![](https://github.com/03DuLi/oracle/blob/master/55.png)
-### 查看数据库的使用情况：
+![](https://github.com/03DuLi/oracle/blob/master/test3/55.png)
+## 插入数据，数据能并平均分布到各个分区。每个表的数据都应该大于1万行，对表进行联合查询。
+### 把数据插入orders表
+```sql
+declare 
+  m integer; 
+
+begin 
+--输出开始时间 
+  dbms_output.put_line('start:'||sysdate); 
+  m:=3333;
+--循环插入的数据量 
+  for i in 1..3334 loop 
+   m:=m+1; 
+insert into ORDERS (ORDER_ID,CUSTOMER_NAME,CUSTOMER_TEL,ORDER_DATE,EMPLOYEE_ID,DISCOUNT,TRADE_RECEIVABLE) 
+values (m,'user'||m,'10000',to_date('2016-05-04 00:00:00', 'SYYYY-MM-DD HH24:MI:SS'),001,15,29);
+    commit; 
+  end loop; 
+--输出结束时间 
+  dbms_output.put_line('end:'||sysdate); 
+end;
+```
+对m的值进行修改,数据能平均分布到各个分区。总共的数据为13332条。
+### 查看插入数据情况：
+![](https://github.com/03DuLi/oracle/blob/master/test3/66.png)
+### 把数据插入order_details表
+```sql
+declare 
+  m integer; 
+begin 
+
+--输出开始时间 
+  dbms_output.put_line('start:'||sysdate); 
+  m:=8334;
+
+--循环插入的数据量 
+  for i in 1..5000 loop 
+   m:=m+1; 
+insert into ORDER_DETAILS (ID,ORDER_ID,PRODUCT_ID,PRODUCT_NUM,PRODUCT_PRICE) 
+values (m,m,'product'||m,15,29);
+    commit; 
+  end loop; 
+--输出结束时间 
+  dbms_output.put_line('end:'||sysdate); 
+end;
+```
+对m的值进行改变，关联order表中的外键，数据能平均分布到各个分区。共插入13332条数据。
+### 查看插入数据情况：
+![](https://github.com/03DuLi/oracle/blob/master/test3/77.png)
+## 联合查询
+```sql
+select 
+    orders.order_id as AID,
+    orders.customer_name as customer_name,
+    order_details.order_id as BID,
+    ORDER_DETAILS.PRODUCT_ID as product_id
+from
+    ORDERS
+INNER JOIN ORDER_DETAILS ON (orders.order_id=order_details.order_id);
+```
+### 联合查询结果：
+![](https://github.com/03DuLi/oracle/blob/master/test3/88.png)
+### 执行SQL developer执行计划
+```sql
+EXPLAIN plan for
+select 
+    orders.order_id as AID,
+    orders.customer_name as customer_name,
+    order_details.order_id as BID,
+    ORDER_DETAILS.PRODUCT_ID as product_id
+from
+    ORDERS
+INNER JOIN ORDER_DETAILS ON (orders.order_id=order_details.order_id);
+
+select * from table(dbms_xplan.display());
+```
+### 执行计划结果
+![](https://github.com/03DuLi/oracle/blob/master/test3/99.png)
+### 执行计划结论
+最先执行的是TABLE ACCESS FULL，意思为对order_details表进行全表扫描。
+
+然后其次执行的是PARTITION REFERENCE ALL，对分区进行引用。
+
+然后对order_id进行索引唯一扫描，因为为order_details的外键。
+
+又因为使用了join，所以又进行了NESTED LOOPS连接查询。
+
+再对orders表进行TABLE ACCESS BY GLOBAL INDEX ROWID，即rowid与索引的扫描，找出符合条件的元素。最后将数据查出。
+## 分区与不分区的对比
+范围分区：就是根据数据库表中某一字段的值的范围来划分分区。
+
+范围分区将数据基于范围映射到每一个分区，这个范围是你在创建分区时指定的分区键决定的。这种分区方式是最为常用的，并且分区键经常采用日期。
+
+Oracle的表分区功能通过改善可管理性、性能和可用性，从而为各式应用程序带来了极大的好处。没有分配权限普通用户只能创建表，读写会报错，所有创建表用要分配权限。
+## 查看数据库的使用情况：
 ```sql
 $ sqlplus system/123@pdborcl
 SQL>SELECT tablespace_name,FILE_NAME,BYTES/1024/1024 MB,MAXBYTES/1024/1024 MAX_MB,autoextensible FROM dba_data_files  WHERE  tablespace_name='USERS';
