@@ -43,6 +43,6 @@ delete from order_details where order_id=3040;
 ![image](https://github.com/03DuLi/Oracle/blob/master/test4/i.png)
 ### 插入数据
 ```sql
-insert into ORDERS values (1,'landed','13308221319'TO_DATE('2016-08-07 12:24:18','SYYYY-MM-DD HH24:MI:SS') ,1,22,23)
+insert into ORDERS values (10000,'zhang10000','1398888832971',TO_DATE('2016-08-07 12:24:18','SYYYY-MM-DD HH24:MI:SS'),110,24.4,16242.45);
 ```
 ![image](https://github.com/03DuLi/Oracle/blob/master/test4/k.png)
